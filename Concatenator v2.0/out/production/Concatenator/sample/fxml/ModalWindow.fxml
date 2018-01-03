@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="423.0" prefWidth="620.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controllers.ControllerModalWindow">
+   <children>
+      <TextArea fx:id="txtA1" layoutX="22.0" layoutY="23.0" prefHeight="178.0" prefWidth="576.0" text="Это текс с текст 1" />
+      <TextArea fx:id="txtA2" layoutX="22.0" layoutY="220.0" prefHeight="178.0" prefWidth="576.0" text="Это текст с текст 2" />
+      <Label layoutX="22.0" layoutY="6.0" text="Файл 1" />
+      <Label layoutX="22.0" layoutY="203.0" text="Файл 2" />
+   </children>
+</AnchorPane>

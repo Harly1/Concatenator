@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Concatenator:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Concatenator_jar</output-path>
+    <root id="archive" name="Concatenator.jar">
+      <element id="module-output" name="Concatenator" />
+    </root>
+  </artifact>
+</component>
