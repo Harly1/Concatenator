@@ -27,7 +27,7 @@ public TextArea txtA2;
          this.filePath1 = filePath1;
          this.filePath2 = filePath2;
      }
-//получаем директорию для выходного файла
+// Получаем директорию для выходного файла
     public  String getOutPutFileName(){
         String outPutFileName = filePath1.substring(filePath1.lastIndexOf("\\"), filePath1.length()); //получаем имя выходного файла
         outPutFileName = ((outPutFileName.replace(".txt","_Out"))+".txt");              //дбавляем слово out к файлу
@@ -45,22 +45,20 @@ public TextArea txtA2;
 
         return shapka;
     }
-    // Заполняем данными list1
+// Заполняем данными list1
     public  List<RowObj> getList1() throws IOException {
-        StackTraceElement[] massForStackTrace;
-        String strStackTraceElement;
+
         List<RowObj> list1 = new ArrayList<RowObj>();
         BufferedReader reader1 = new BufferedReader(new InputStreamReader(new FileInputStream(filePath1), "windows-1251"));
         String[] s1Mass;
         int countRowList1 = 1;
+
         while (reader1.ready()) {
             String s1 = reader1.readLine();
             if (countRowList1 == 1) {
-
                 countRowList1++;
             } else {
                 s1Mass = s1.split("[\t]");
-
                 double salesV = 0;
                 double salesI = 0;
 
@@ -69,23 +67,8 @@ public TextArea txtA2;
                     salesV = Double.parseDouble((s1Mass[9].replace(",", ".")));
 
                 } catch (NumberFormatException e) {
-                    massForStackTrace = e.getStackTrace();
-                    strStackTraceElement = massForStackTrace[0].toString();
-                    if(strStackTraceElement.contains("empty String")){
-                        StringBuilder introRow = new StringBuilder("Ошибка в строке " +countRowList1+ "нет значения в поле salesvalue" +'\n');
-                        StringBuilder shapkaRow = new StringBuilder(Arrays.toString(getShapka())+'\n');
-                        StringBuilder s1Row = new StringBuilder(s1);
-                        StringBuilder restoreRowText = new StringBuilder("Строка была исправлена на строку:"+'\n');
-                //        StringBuilder restoreRow = new StringBuilder(obj+'\n');
-                        StringBuilder separatorRow = new StringBuilder("----------------------------------------------------------"+'\n');
 
-                    } else if(strStackTraceElement.contains("For input string")){
-
-
-                    }else {
-
-
-                    }
+                    salesValue(s1Mass, countRowList1, s1);
 
                 }
 
@@ -93,8 +76,9 @@ public TextArea txtA2;
                     salesI = Double.parseDouble((s1Mass[10].replace(",", ".")));
 
                 } catch (NumberFormatException e) {
-                    b4.setVisible(true);
-                    e.printStackTrace();
+
+                    salesItem(s1Mass, countRowList1, s1);
+
                 }
                 // Нужно обработать ситуацию с разрывом внутри строки
 
@@ -104,16 +88,16 @@ public TextArea txtA2;
                     obj = new RowObj(s1Mass[0], s1Mass[1], s1Mass[2], s1Mass[3], s1Mass[4],
                             s1Mass[5], s1Mass[6], s1Mass[7], s1Mass[8], salesI, salesV, s1Mass[11], s1Mass[12]);      //не понятен порядок salesvalue и salesitem
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    b4.setVisible(true);
+
 
                     //         controllerModal.errorLogList1(strStackTraceElement);
-                    String s2 = reader1.readLine();
-                    String[] s2MassNextLine = s2.split("[\t]");
+                    String nextLine = reader1.readLine();
+                    String[] s2MassNextLine = nextLine.split("[\t]");
                     if (s2MassNextLine.length == 13) {
                         obj = new RowObj(s2MassNextLine[0], s2MassNextLine[1], s2MassNextLine[2], s2MassNextLine[3], s2MassNextLine[4],
                                 s2MassNextLine[5], s2MassNextLine[6], s2MassNextLine[7], s2MassNextLine[8], salesI, salesV, s2MassNextLine[11], s2MassNextLine[12]);
                     } else if (s2MassNextLine.length + s1Mass.length == 13) {
-                        String restoreString = s1 + s2;
+                        String restoreString = s1 + nextLine;
                         String[] massRestoreString = restoreString.split("[\t]");
                         if (massRestoreString.length == 13) {
                             obj = new RowObj(massRestoreString[0], massRestoreString[1], massRestoreString[2], massRestoreString[3], massRestoreString[4],
@@ -144,7 +128,9 @@ public TextArea txtA2;
         reader1.close();
         return list1;
     }
-    // Заполняем данными list2
+
+
+// Заполняем данными list2
     public List<RowObj> getList2() throws IOException {
         List<RowObj> list2 = new ArrayList<RowObj>();
         BufferedReader reader2 = new BufferedReader(new InputStreamReader(new FileInputStream(filePath2), "windows-1251"));
@@ -152,24 +138,30 @@ public TextArea txtA2;
         int countRowList2 = 1;
 
         while (reader2.ready()) {
-            String s1 = reader2.readLine();
+            String s2 = reader2.readLine();
             if (countRowList2 == 1) {
 
                 countRowList2++;
             } else {
-                s2Mass = s1.split("[\t]");
-
-                    // в файле в качестве разделителя дробной части присутствект , а не .
-                    double salesV = 0;
-                    double salesI = 0;
-
+                s2Mass = s2.split("[\t]");
+                double salesV = 0;
+                double salesI = 0;
+// в файле в качестве разделителя дробной части присутствект , а не .
                     try {
                         salesV = Double.parseDouble((s2Mass[9].replace(",", ".")));
+                    } catch (Exception e) {
+
+                         salesValue(s2Mass,countRowList2,s2);
+                    }
+
+                    try {
                         salesI = Double.parseDouble((s2Mass[10].replace(",", ".")));
                     } catch (Exception e) {
-                        salesV = 0;
-                        salesI = 0;
+
+                        salesItem(s2Mass,countRowList2,s2);
                     }
+
+
                     RowObj obj = new RowObj(s2Mass[0], s2Mass[1], s2Mass[2], s2Mass[3], s2Mass[4],
                             s2Mass[5], s2Mass[6], s2Mass[7], s2Mass[8], salesI, salesV, s2Mass[11], s2Mass[12]);
 
@@ -190,7 +182,7 @@ public TextArea txtA2;
         return list2;
     }
 
-    // Заполняем данными result
+// Заполняем данными result
     public List<RowObj> getResultList(List<RowObj> list1, List<RowObj> list2) throws IOException {
         List<RowObj> result = new ArrayList<RowObj>();
         StackTraceElement[] massForStackTrace = {};
@@ -231,15 +223,24 @@ public TextArea txtA2;
         return result;
 
     }
-//Сборка строк с ошибками и передача из в Модальное окно
-    public void strErrorBuilder(){
+// Сборка строк с ошибками и передача из в Модальное окно
+public void strErrorBuilder(String str){
+    b4.setVisible(true);
+   // Thread.currentThread().getStackTrace()[1].getClassName();
+    StackTraceElement[] s = Thread.currentThread().getStackTrace();
+    String st = s[3].toString();
+    if(st.contains("getList1")) {
+        txtA1.setText(txtA1.getText() + str);
+
+    } else if(st.contains("getList2")){
+        txtA2.setText(txtA2.getText() + str);
 
     }
+}
 
 // Пишим в файл
 public void writeOutPutFile(String currentdir,String[] shapka, List<RowObj> result ) throws IOException {
 
-       // BufferedWriter writer = new BufferedWriter(new FileWriter(currentdir));
         BufferedWriter writer = new BufferedWriter(new FileWriter(currentdir));
 
         for (int i = 0; i < shapka.length; i++) {
@@ -254,12 +255,30 @@ public void writeOutPutFile(String currentdir,String[] shapka, List<RowObj> resu
         writer.close();
 
     lb3.setText("Файл сгенерирован");
-//Изменение
-
 
     }
 
-
+    private void salesItem(String[] s1Mass, int countRowList1, String s1) throws IOException {
+        StringBuilder introRow = new StringBuilder("Ошибка в строке " +(countRowList1-1)+ ": нет значения в поле salesitem" +'\n');
+        StringBuilder shapkaRow = new StringBuilder(Arrays.toString(getShapka())+'\n');
+        StringBuilder s1Row = new StringBuilder(s1+'\n');
+        StringBuilder restoreRowText = new StringBuilder("Строка была исправлена на строку:"+'\n');
+        s1Mass[10] = "0";
+        StringBuilder restoreRow = new StringBuilder(Arrays.toString(s1Mass)+'\n');
+        StringBuilder separatorRow = new StringBuilder("-----------------------------------------------------------------------------------------------------------------------------------------------"+'\n');
+        strErrorBuilder(introRow.append(shapkaRow).append(s1Row).append(restoreRowText).append(restoreRow).append(separatorRow).toString());
     }
+
+    private void salesValue(String[] s1Mass, int countRowList1, String s1) throws IOException {
+        StringBuilder introRow = new StringBuilder("Ошибка в строке " +(countRowList1-1)+ ": нет значения в поле salesvalue" +'\n');
+        StringBuilder shapkaRow = new StringBuilder(Arrays.toString(getShapka())+'\n');
+        StringBuilder s1Row = new StringBuilder(s1+'\n');
+        StringBuilder restoreRowText = new StringBuilder("Строка была исправлена на строку:"+'\n');
+        s1Mass[9] = "0";
+        StringBuilder restoreRow = new StringBuilder(Arrays.toString(s1Mass)+'\n');
+        StringBuilder separatorRow = new StringBuilder("-----------------------------------------------------------------------------------------------------------------------------------------------"+'\n');
+        strErrorBuilder(introRow.append(shapkaRow).append(s1Row).append(restoreRowText).append(restoreRow).append(separatorRow).toString());
+    }
+}
 
 
