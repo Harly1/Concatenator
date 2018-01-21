@@ -7,9 +7,8 @@ import javafx.scene.control.TextArea;
 import sample.controllers.ControllerModalWindow;
 import java.io.*;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.function.Predicate;
 
 public class Work {
 private String filePath1;
@@ -62,57 +61,49 @@ public TextArea txtA2;
                 double salesV = 0;
                 double salesI = 0;
 
-                // в файле в качестве разделителя дробной части присутствект , а не .
-                try {
-                    salesV = Double.parseDouble((s1Mass[9].replace(",", ".")));
-
-                } catch (NumberFormatException e) {
-
-                    salesValue(s1Mass, countRowList1, s1);
-
-                }
-
-                try {
-                    salesI = Double.parseDouble((s1Mass[10].replace(",", ".")));
-
-                } catch (NumberFormatException e) {
-
-                    salesItem(s1Mass, countRowList1, s1);
-
-                }
-                // Нужно обработать ситуацию с разрывом внутри строки
+// Нужно обработать ситуацию с разрывом внутри строки
 
                 RowObj obj = new RowObj("0", "0",
                         "0", "0", "0", "0", "0", "0", "0", 0, 0, "0", "0");
                 try {
                     obj = new RowObj(s1Mass[0], s1Mass[1], s1Mass[2], s1Mass[3], s1Mass[4],
-                            s1Mass[5], s1Mass[6], s1Mass[7], s1Mass[8], salesI, salesV, s1Mass[11], s1Mass[12]);      //не понятен порядок salesvalue и salesitem
+                            s1Mass[5], s1Mass[6], s1Mass[7], s1Mass[8], salesI, salesV, s1Mass[11], s1Mass[12]);
+// В файле в качестве разделителя дробной части присутствект , а не .
+                    salesValueAndsalesItem(s1Mass, countRowList1, s1);
                 } catch (ArrayIndexOutOfBoundsException e) {
 
 
-                    //         controllerModal.errorLogList1(strStackTraceElement);
                     String nextLine = reader1.readLine();
-                    String[] s2MassNextLine = nextLine.split("[\t]");
-                    if (s2MassNextLine.length == 13) {
-                        obj = new RowObj(s2MassNextLine[0], s2MassNextLine[1], s2MassNextLine[2], s2MassNextLine[3], s2MassNextLine[4],
-                                s2MassNextLine[5], s2MassNextLine[6], s2MassNextLine[7], s2MassNextLine[8], salesI, salesV, s2MassNextLine[11], s2MassNextLine[12]);
-                    } else if (s2MassNextLine.length + s1Mass.length == 13) {
-                        String restoreString = s1 + nextLine;
-                        String[] massRestoreString = restoreString.split("[\t]");
-                        if (massRestoreString.length == 13) {
+                    String[] massNextLine = nextLine.split("[\t]");
+                    List<String> strList1 = new ArrayList<String>(Arrays.asList(massNextLine));
+//                  strList.removeIf(i -> i.equals(""));
+
+                    Iterator<String> iter = strList1.iterator();
+                    while (iter.hasNext()) {
+                        String s = iter.next();
+                        if (s.equals("")) {
+                            iter.remove();
+                        }
+                    }
+
+                    String restoreString = s1 + nextLine;
+                    String[] massRestoreString = restoreString.split("[\t]");
+
+                    if (massNextLine.length == 13) {
+                        obj = new RowObj(massNextLine[0], massNextLine[1], massNextLine[2], massNextLine[3], massNextLine[4],
+                                massNextLine[5], massNextLine[6], massNextLine[7], massNextLine[8], salesI, salesV, massNextLine[11], massNextLine[12]);
+                    } else if (strList1.size() + s1Mass.length == massRestoreString.length) {
                             obj = new RowObj(massRestoreString[0], massRestoreString[1], massRestoreString[2], massRestoreString[3], massRestoreString[4],
                                     massRestoreString[5], massRestoreString[6], massRestoreString[7], massRestoreString[8], salesI, salesV, massRestoreString[11], massRestoreString[12]);
+                            lineBreak(massRestoreString, countRowList1, s1, nextLine);
+                            salesValueAndsalesItem(massRestoreString, countRowList1, s1);
                         } else {
-                            continue;
+                           // lineBreak(massRestoreString, countRowList1, s1, nextLine);
                         }
-
-                    } else {
-                        continue;
-                    }
 
                 }
 
-                //проверяем дубликаты, если они есть агрегируем
+// Проверяем дубликаты, если они есть агрегируем
                 if (list1.indexOf(obj) != -1) {
                     int list1Index = list1.indexOf(obj);
                     obj.salesvalues = obj.salesvalues + list1.get(list1Index).salesvalues;
@@ -130,7 +121,7 @@ public TextArea txtA2;
     }
 
 
-// Заполняем данными list2
+    // Заполняем данными list2
     public List<RowObj> getList2() throws IOException {
         List<RowObj> list2 = new ArrayList<RowObj>();
         BufferedReader reader2 = new BufferedReader(new InputStreamReader(new FileInputStream(filePath2), "windows-1251"));
@@ -228,7 +219,7 @@ public void strErrorBuilder(String str){
     b4.setVisible(true);
    // Thread.currentThread().getStackTrace()[1].getClassName();
     StackTraceElement[] s = Thread.currentThread().getStackTrace();
-    String st = s[3].toString();
+    String st = s[3].toString()+" "+s[4].toString();
     if(st.contains("getList1")) {
         txtA1.setText(txtA1.getText() + str);
 
@@ -258,6 +249,28 @@ public void writeOutPutFile(String currentdir,String[] shapka, List<RowObj> resu
 
     }
 
+    private void salesValueAndsalesItem(String[] s1Mass, int countRowList1, String s1) throws IOException {
+        double salesV;
+        double salesI;
+        try {
+            salesV = Double.parseDouble((s1Mass[9].replace(",", ".")));
+
+        } catch (NumberFormatException e) {
+
+            salesValue(s1Mass, countRowList1, s1);
+
+        }
+
+        try {
+            salesI = Double.parseDouble((s1Mass[10].replace(",", ".")));
+
+        } catch (NumberFormatException e) {
+
+            salesItem(s1Mass, countRowList1, s1);
+
+        }
+    }
+
     private void salesItem(String[] s1Mass, int countRowList1, String s1) throws IOException {
         StringBuilder introRow = new StringBuilder("Ошибка в строке " +(countRowList1-1)+ ": нет значения в поле salesitem" +'\n');
         StringBuilder shapkaRow = new StringBuilder(Arrays.toString(getShapka())+'\n');
@@ -278,6 +291,17 @@ public void writeOutPutFile(String currentdir,String[] shapka, List<RowObj> resu
         StringBuilder restoreRow = new StringBuilder(Arrays.toString(s1Mass)+'\n');
         StringBuilder separatorRow = new StringBuilder("-----------------------------------------------------------------------------------------------------------------------------------------------"+'\n');
         strErrorBuilder(introRow.append(shapkaRow).append(s1Row).append(restoreRowText).append(restoreRow).append(separatorRow).toString());
+    }
+
+    private void lineBreak(String[] s1Mass, int countRowList1, String s1,String s2) throws IOException {
+        StringBuilder introRow = new StringBuilder("Ошибка в строке " +(countRowList1-2)+" и в строке "+(countRowList1-1)+ ": разрыв в строке" +'\n');
+        StringBuilder shapkaRow = new StringBuilder(Arrays.toString(getShapka())+'\n');
+        StringBuilder s1Row1 = new StringBuilder(s1+'\n');
+        StringBuilder s1Row2 = new StringBuilder(s2+'\n');
+        StringBuilder restoreRowText = new StringBuilder("Строки "+(countRowList1-2)+" и "+(countRowList1-1)+ " были исправлена на строку:"+'\n');
+        StringBuilder restoreRow = new StringBuilder(Arrays.toString(s1Mass)+'\n');
+        StringBuilder separatorRow = new StringBuilder("-----------------------------------------------------------------------------------------------------------------------------------------------"+'\n');
+        strErrorBuilder(introRow.append(shapkaRow).append(s1Row1).append(s1Row2).append(restoreRowText).append(restoreRow).append(separatorRow).toString());
     }
 }
 
