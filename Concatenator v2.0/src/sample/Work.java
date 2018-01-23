@@ -18,9 +18,6 @@ public Label lb3;
 public TextArea txtA1;
 public TextArea txtA2;
 
-     private Work() {
-
-     }
 
      public Work(String filePath1,String filePath2 ) {
          this.filePath1 = filePath1;
@@ -121,7 +118,7 @@ public TextArea txtA2;
     }
 
 
-    // Заполняем данными list2
+// Заполняем данными list2
     public List<RowObj> getList2() throws IOException {
         List<RowObj> list2 = new ArrayList<RowObj>();
         BufferedReader reader2 = new BufferedReader(new InputStreamReader(new FileInputStream(filePath2), "windows-1251"));
@@ -137,7 +134,7 @@ public TextArea txtA2;
                 s2Mass = s2.split("[\t]");
                 double salesV = 0;
                 double salesI = 0;
-// в файле в качестве разделителя дробной части присутствект , а не .
+// В файле в качестве разделителя дробной части присутствект , а не .
                     try {
                         salesV = Double.parseDouble((s2Mass[9].replace(",", ".")));
                     } catch (Exception e) {
@@ -214,7 +211,7 @@ public TextArea txtA2;
         return result;
 
     }
-// Сборка строк с ошибками и передача из в Модальное окно
+// Сборка строк с ошибками и передача их в Модальное окно
 public void strErrorBuilder(String str){
     b4.setVisible(true);
    // Thread.currentThread().getStackTrace()[1].getClassName();
