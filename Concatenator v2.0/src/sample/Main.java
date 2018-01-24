@@ -5,15 +5,20 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import sample.controllers.Controller;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("fxml/Main.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        Parent root = fxmlLoader.load(getClass().getResource("fxml/Main.fxml").openStream());
+        Controller controller = fxmlLoader.getController();
+        controller.setStage(primaryStage);
         primaryStage.setTitle("Главное окно");
         primaryStage.setScene(new Scene(root, 377, 129));
         primaryStage.show();
+
     }
 
 

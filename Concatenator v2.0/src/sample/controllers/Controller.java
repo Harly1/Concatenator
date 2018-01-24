@@ -35,12 +35,12 @@ public class Controller implements Initializable {
     FileChooser fileChooser = new FileChooser();
     FXMLLoader fxmlLoader;  // загрузчик для модального окна
     Parent root; // загрузчик для модального окна
-
+    private Stage primaryStage = null;
     @Override
     @FXML
     public void initialize(URL location, ResourceBundle resources)  {
-        text1.setText("C:\\Users\\Kaz\\Desktop\\T\\Тест1.txt");
-        text2.setText("C:\\Users\\Kaz\\Desktop\\T\\Тест2.txt");
+        text1.setText("C:\\JavaTest\\Тест1.txt");
+        text2.setText("C:\\JavaTest\\Тест2.txt");
         //Получение экземпляра контроллера модального окна
         fxmlLoader = new FXMLLoader(getClass().getResource("../fxml/ModalWindow.fxml"));
         try {
@@ -53,6 +53,11 @@ public class Controller implements Initializable {
         //
         b4.setVisible(false);
 
+    }
+
+
+    public void setStage(Stage stage) {
+        this.primaryStage = stage;
     }
 
     public void OnActionb1(ActionEvent actionEvent) throws IOException {
@@ -141,7 +146,7 @@ public class Controller implements Initializable {
             stage.setResizable(false);
             stage.setScene(new Scene((root)));
             stage.initModality(Modality.WINDOW_MODAL);
-           // stage.initOwner((Node)ActionEvent);
+            stage.initOwner(primaryStage);
             stage.show();
         } catch (Exception e){
             e.printStackTrace();
