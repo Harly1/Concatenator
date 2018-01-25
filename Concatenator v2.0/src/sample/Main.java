@@ -9,6 +9,7 @@ import sample.controllers.Controller;
 
 public class Main extends Application {
 // Проверка ГИТ!!!
+// Проверка 2
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader();
