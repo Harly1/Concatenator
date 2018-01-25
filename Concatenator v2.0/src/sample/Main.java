@@ -11,6 +11,7 @@ public class Main extends Application {
 // Проверка ГИТ!!!
 // Проверка 2 XXX!!!!!!!
 // Проверка 3
+//    Проверка 4
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader();
