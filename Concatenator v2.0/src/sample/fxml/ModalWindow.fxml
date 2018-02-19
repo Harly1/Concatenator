@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="421.0" prefWidth="770.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controllers.ControllerModalWindow">
+<AnchorPane prefHeight="419.0" prefWidth="767.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controllers.ControllerModalWindow">
    <children>
       <TextArea fx:id="txtA1" layoutX="22.0" layoutY="23.0" prefHeight="178.0" prefWidth="726.0" />
       <TextArea fx:id="txtA2" layoutX="22.0" layoutY="220.0" prefHeight="178.0" prefWidth="726.0" />
